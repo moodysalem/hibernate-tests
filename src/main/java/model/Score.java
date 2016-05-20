@@ -1,6 +1,8 @@
 package model;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Score extends WithID {
@@ -9,8 +11,8 @@ public class Score extends WithID {
     private Team team;
 
     @ManyToOne
-    @JoinColumn(name = "gameId", nullable = false)
-    private Game game;
+    @JoinColumn(name = "resultId", nullable = false)
+    private Result result;
 
     public Team getTeam() {
         return team;
@@ -20,11 +22,11 @@ public class Score extends WithID {
         this.team = team;
     }
 
-    public Game getGame() {
-        return game;
+    public Result getResult() {
+        return result;
     }
 
-    public void setGame(Game game) {
-        this.game = game;
+    public void setResult(Result result) {
+        this.result = result;
     }
 }

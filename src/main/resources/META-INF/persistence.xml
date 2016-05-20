@@ -6,6 +6,8 @@
 
   <persistence-unit name="test">
     <class>model.Game</class>
+    <class>model.Result</class>
+    <class>model.Score</class>
     <class>model.Team</class>
     <class>model.WithID</class>
   </persistence-unit>

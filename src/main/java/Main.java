@@ -1,4 +1,5 @@
 import model.Game;
+import model.Result;
 import model.Score;
 import model.Team;
 
@@ -58,12 +59,16 @@ public class Main {
         g.setAwayTeam(away);
         em.persist(g);
 
+        Result r = new Result();
+        r.setGame(g);
+        em.persist(r);
+
         Score homeScore = new Score(),
             awayScore = new Score();
-        homeScore.setGame(g);
+        homeScore.setResult(r);
         homeScore.setTeam(home);
 
-        awayScore.setGame(g);
+        awayScore.setResult(r);
         awayScore.setTeam(away);
 
         em.persist(homeScore);
