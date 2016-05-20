@@ -47,6 +47,9 @@ public class Main {
         Team home = new Team(),
             away = new Team();
 
+        home.setName("home");
+        away.setName("away");
+
         em.persist(home);
         em.persist(away);
 
@@ -78,6 +81,7 @@ public class Main {
         em.close();
 
         assert g.getHomeScore() != null && g.getHomeScore().getId() != null && g.getHomeScore() instanceof Score;
-        assert g.getHomeTeam() != null && g.getHomeTeam().getId() != null && g.getHomeTeam() instanceof Team;
+        assert g.getHomeTeam() != null && g.getHomeTeam().getId() != null && "home".equals(g.getHomeTeam().getName()) &&
+            g.getHomeTeam() instanceof Team;
     }
 }
