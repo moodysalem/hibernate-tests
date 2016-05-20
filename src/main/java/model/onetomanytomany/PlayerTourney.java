@@ -18,9 +18,9 @@ public class PlayerTourney extends WithID {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-        name = "PlayerTourney_Tourney",
-        joinColumns = @JoinColumn(name = "teamId", referencedColumnName = "id"),
-        inverseJoinColumns = @JoinColumn(name = "playerTourneyId", referencedColumnName = "id")
+        name = "PlayerTourney_Team",
+        inverseJoinColumns = @JoinColumn(name = "teamId", referencedColumnName = "id"),
+        joinColumns = @JoinColumn(name = "playerTourneyId", referencedColumnName = "id")
     )
     private List<Team> teams;
 
