@@ -1,4 +1,6 @@
-package model;
+package model.hhh10741;
+
+import model.WithID;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;

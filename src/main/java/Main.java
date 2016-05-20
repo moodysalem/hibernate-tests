@@ -1,11 +1,15 @@
-import model.Game;
-import model.Result;
-import model.Score;
-import model.Team;
+import model.hhh10741.Game;
+import model.hhh10741.Result;
+import model.hhh10741.Score;
+import model.hhh10741.Team;
+import model.onetomanytomany.Player;
+import model.onetomanytomany.PlayerTourney;
+import model.onetomanytomany.Tourney;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.util.Arrays;
 import java.util.Properties;
 
 public class Main {
@@ -35,8 +39,49 @@ public class Main {
         System.out.println("Started!");
 
         testHHH10741();
+        testOneToManyToMany();
 
         emf.close();
+    }
+
+    public static void testOneToManyToMany() {
+        EntityManager em = emf.createEntityManager();
+
+        em.getTransaction().begin();
+        Tourney t = new Tourney();
+        t.setName("My Tourney");
+        em.persist(t);
+        em.flush();
+
+        Team team = new Team();
+        team.setName("player team");
+        em.persist(team);
+        em.flush();
+
+        Player p = new Player();
+        p.setName("Moody");
+
+        PlayerTourney pt = new PlayerTourney();
+        pt.setTourney(t);
+        pt.setTeams(Arrays.asList(team));
+
+        p.setTourneys(Arrays.asList(pt));
+
+        em.persist(p);
+        em.flush();
+        em.getTransaction().commit();
+        em.close();
+
+        em = emf.createEntityManager();
+
+        p = em.find(Player.class, p.getId());
+
+        em.close();
+
+        assert p.getTourneys().size() == 1;
+        assert p.getTourneys().get(0).getTeams().size() == 1;
+        team = p.getTourneys().get(0).getTeams().get(0);
+        assert team.getName().equals("player team");
     }
 
     public static void testHHH10741() {

@@ -1,5 +1,6 @@
-package model;
+package model.hhh10741;
 
+import model.WithID;
 import org.hibernate.annotations.JoinFormula;
 
 import javax.persistence.Entity;

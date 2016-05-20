@@ -5,10 +5,15 @@
              version="2.1">
 
   <persistence-unit name="test">
-    <class>model.Game</class>
-    <class>model.Result</class>
-    <class>model.Score</class>
-    <class>model.Team</class>
+    <class>model.hhh10741.Game</class>
+    <class>model.hhh10741.Result</class>
+    <class>model.hhh10741.Score</class>
+    <class>model.hhh10741.Team</class>
+
+    <class>model.onetomanytomany.Player</class>
+    <class>model.onetomanytomany.PlayerTourney</class>
+    <class>model.onetomanytomany.Tourney</class>
+
     <class>model.WithID</class>
   </persistence-unit>
 </persistence>
