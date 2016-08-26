@@ -1,3 +1,6 @@
+import model.embeddabletwice.EmbeddableOne;
+import model.embeddabletwice.EmbeddableTwo;
+import model.embeddabletwice.Parent;
 import model.hhh10741.Game;
 import model.hhh10741.Result;
 import model.hhh10741.Score;
@@ -9,7 +12,11 @@ import model.onetomanytomany.Tourney;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Properties;
 
 public class Main {
@@ -18,7 +25,7 @@ public class Main {
 
     static {
         Properties p = new Properties();
-        p.setProperty("hibernate.connection.url", "jdbc:h2:mem:wtngservlet");
+        p.setProperty("hibernate.connection.url", "jdbc:h2:mem:hibernatetests");
         p.setProperty("hibernate.connection.username", "sa");
         p.setProperty("hibernate.connection.password", "sa");
         p.setProperty("hibernate.connection.useUnicode", "true");
@@ -40,8 +47,35 @@ public class Main {
 
         testHHH10741();
         testOneToManyToMany();
+        testDoubleEmbeddable();
 
         emf.close();
+    }
+
+    public static void testDoubleEmbeddable() {
+        final EntityManager em = emf.createEntityManager();
+
+        Parent p = new Parent();
+        p.setId(1);
+        p.setOne(new HashSet<>());
+        EmbeddableOne e1 = new EmbeddableOne();
+        p.getOne().add(e1);
+
+        EmbeddableTwo e2 = new EmbeddableTwo();
+        e1.setOneString("hello");
+        e1.setTwo(e2);
+        e2.setTwoString("world");
+
+        em.getTransaction().begin();
+        em.persist(p);
+        em.getTransaction().commit();
+
+        final CriteriaBuilder cb = em.getCriteriaBuilder();
+        final CriteriaQuery<Parent> pQ = cb.createQuery(Parent.class);
+        final List<Parent> query = em.createQuery(pQ.select(pQ.from(Parent.class))).getResultList();
+
+        assert query.size() == 1;
+        assert query.get(0).getId().equals(1);
     }
 
     public static void testOneToManyToMany() {
