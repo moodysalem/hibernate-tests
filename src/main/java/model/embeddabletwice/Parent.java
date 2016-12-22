@@ -1,11 +1,9 @@
 package model.embeddabletwice;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Set;
 
-@Entity
+//@Entity
 public class Parent {
     @Id
     private Integer id;

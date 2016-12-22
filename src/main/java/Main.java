@@ -1,6 +1,8 @@
 import model.embeddabletwice.EmbeddableOne;
 import model.embeddabletwice.EmbeddableTwo;
 import model.embeddabletwice.Parent;
+import model.enumembeddablemap.Competition;
+import model.enumembeddablemap.Participant;
 import model.hhh10741.Game;
 import model.hhh10741.Result;
 import model.hhh10741.Score;
@@ -11,13 +13,11 @@ import model.onetomanytomany.Tourney;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 public class Main {
 
@@ -45,11 +45,56 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Started!");
 
-        testHHH10741();
-        testOneToManyToMany();
-        testDoubleEmbeddable();
+//        testHHH10741();
+//        testOneToManyToMany();
+//        testDoubleEmbeddable();
+        testEnumEmbeddableMap();
 
         emf.close();
+    }
+
+
+    public static void testEnumEmbeddableMap() {
+        final EntityManager em = emf.createEntityManager();
+        final EntityTransaction etx = em.getTransaction();
+
+        // create a competition with a red and blue
+        Competition c = new Competition();
+        c.setParticipants(new HashMap<>());
+        c.getParticipants().put(Competition.Side.RED, new Participant("Me", 1));
+        c.getParticipants().put(Competition.Side.BLUE, new Participant("You", 2));
+
+        etx.begin();
+        c = em.merge(c);
+        em.flush();
+
+        // create a
+        c.getParticipants().put(Competition.Side.RED, new Participant(null, null));
+        em.flush();
+
+        em.refresh(c);
+
+        assert c.getParticipants().containsKey(Competition.Side.RED);
+        assert c.getParticipants().get(Competition.Side.RED).getName() == null;
+
+        etx.commit();
+
+        em.clear();
+
+        em.find(Competition.class, c.getId());
+        assert c.getParticipants().size() == 2;
+
+        assert c.getParticipants().get(Competition.Side.RED) != null;
+        System.out.println(c.getParticipants().get(Competition.Side.RED));
+
+        final Participant p = c.getParticipants().get(Competition.Side.RED);
+        assert p != null;
+
+        p.setName("Again");
+        etx.begin();
+        c = em.merge(c);
+        etx.commit();
+
     }
 
     public static void testDoubleEmbeddable() {

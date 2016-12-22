@@ -14,9 +14,12 @@
     <class>model.onetomanytomany.PlayerTourney</class>
     <class>model.onetomanytomany.Tourney</class>
 
-    <class>model.embeddabletwice.EmbeddableOne</class>
-    <class>model.embeddabletwice.EmbeddableTwo</class>
-    <class>model.embeddabletwice.Parent</class>
+    <!--<class>model.embeddabletwice.EmbeddableOne</class>-->
+    <!--<class>model.embeddabletwice.EmbeddableTwo</class>-->
+    <!--<class>model.embeddabletwice.Parent</class>-->
+
+    <class>model.enumembeddablemap.Competition</class>
+    <class>model.enumembeddablemap.Participant</class>
 
     <class>model.WithID</class>
   </persistence-unit>
