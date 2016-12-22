@@ -10,6 +10,7 @@ import model.hhh10741.Team;
 import model.onetomanytomany.Player;
 import model.onetomanytomany.PlayerTourney;
 import model.onetomanytomany.Tourney;
+import org.testng.annotations.Test;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -17,9 +18,12 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Properties;
 
-public class Main {
+public class Tests {
 
     private static final EntityManagerFactory emf;
 
@@ -42,18 +46,7 @@ public class Main {
         emf = Persistence.createEntityManagerFactory("test", p);
     }
 
-    public static void main(String[] args) {
-        System.out.println("Started!");
-
-//        testHHH10741();
-//        testOneToManyToMany();
-//        testDoubleEmbeddable();
-        testEnumEmbeddableMap();
-
-        emf.close();
-    }
-
-
+    @Test
     public static void testEnumEmbeddableMap() {
         final EntityManager em = emf.createEntityManager();
         final EntityTransaction etx = em.getTransaction();
@@ -65,46 +58,38 @@ public class Main {
         c.getParticipants().put(Competition.Side.BLUE, new Participant("You", 2));
 
         etx.begin();
-        c = em.merge(c);
+        em.persist(c);
         em.flush();
-
-        // create a
-        c.getParticipants().put(Competition.Side.RED, new Participant(null, null));
-        em.flush();
+        etx.commit();
 
         em.refresh(c);
 
-        assert c.getParticipants().containsKey(Competition.Side.RED);
-        assert c.getParticipants().get(Competition.Side.RED).getName() == null;
+        // participants are correctly persisted
+        assert c.getParticipants().get(Competition.Side.RED).getName().equals("Me");
+        assert c.getParticipants().get(Competition.Side.BLUE).getName().equals("You");
 
-        etx.commit();
 
-        em.clear();
-
-        em.find(Competition.class, c.getId());
-        assert c.getParticipants().size() == 2;
-
-        assert c.getParticipants().get(Competition.Side.RED) != null;
-        System.out.println(c.getParticipants().get(Competition.Side.RED));
-
-        final Participant p = c.getParticipants().get(Competition.Side.RED);
-        assert p != null;
-
-        p.setName("Again");
+        // now put a participant with null values in the key RED
         etx.begin();
-        c = em.merge(c);
+        c.getParticipants().put(Competition.Side.RED, new Participant(null, null));
+        em.flush();
         etx.commit();
 
+        em.refresh(c);
+
+        // this is failing
+        assert c.getParticipants().containsKey(Competition.Side.RED);
     }
 
+    @Test(enabled = false)
     public static void testDoubleEmbeddable() {
         final EntityManager em = emf.createEntityManager();
 
         Parent p = new Parent();
         p.setId(1);
-        p.setOne(new HashSet<>());
+//        p.setOne(new HashSet<>());
         EmbeddableOne e1 = new EmbeddableOne();
-        p.getOne().add(e1);
+//        p.getOne().add(e1);
 
         EmbeddableTwo e2 = new EmbeddableTwo();
         e1.setOneString("hello");
@@ -123,6 +108,7 @@ public class Main {
         assert query.get(0).getId().equals(1);
     }
 
+    @Test
     public static void testOneToManyToMany() {
         EntityManager em = emf.createEntityManager();
 
@@ -163,6 +149,7 @@ public class Main {
         assert team.getName().equals("player team");
     }
 
+    @Test
     public static void testHHH10741() {
         // this is the setup code
         EntityManager em = emf.createEntityManager();

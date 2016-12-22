@@ -1,19 +1,26 @@
 package model.enumembeddablemap;
 
-import model.WithID;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
 import javax.persistence.*;
 import java.util.Map;
 
 @Entity
-public class Competition extends WithID {
+public class Competition {
     public enum Side {
         RED, BLUE
     }
 
-    @Fetch(FetchMode.SUBSELECT)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public Integer id;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     @MapKeyColumn(name = "side")
     @MapKeyEnumerated(EnumType.STRING)
     @ElementCollection(fetch = FetchType.EAGER)
