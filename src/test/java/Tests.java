@@ -77,7 +77,7 @@ public class Tests {
 
         em.refresh(c);
 
-        // this is failing
+        // this is failing: https://hibernate.atlassian.net/browse/HHH-11353
         assert c.getParticipants().containsKey(Competition.Side.RED);
     }
 
